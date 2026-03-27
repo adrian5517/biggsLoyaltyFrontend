@@ -259,7 +259,7 @@ function ToggleCard({ checked, onChange, accentColor, icon, label, description }
 // ---------------------------------------------------------------------------
 export function RegistrationForm() {
   const { toast } = useToast()
-  const [mounted, setMounted] = useState(false)
+  
   const [menuOptions, setMenuOptions] = useState<MenuItem[]>([])
   const [branchOptions, setBranchOptions] = useState<BranchItem[]>([])
   const [menuLoading, setMenuLoading] = useState(true)
@@ -275,8 +275,6 @@ export function RegistrationForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
 
   useEffect(() => {
-    setMounted(true)
-
     fetch(`${API_BASE}/menu_list.php`)
       .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then((data) => {
@@ -357,7 +355,7 @@ export function RegistrationForm() {
 
   if (isSuccess) {
     return (
-      <div className={`w-full ${mounted ? "animate-scale-up" : "opacity-0"}`}>
+      <div className="w-full animate-scale-up">
         <Card className="w-full max-w-lg mx-auto border-0 shadow-2xl overflow-hidden bg-white">
           <div className="h-2 flex">
             <div className="flex-1 bg-[#32a7de]" /><div className="flex-1 bg-[#e8ba37]" /><div className="flex-1 bg-[#bd222f]" />
@@ -380,7 +378,7 @@ export function RegistrationForm() {
   }
 
   return (
-    <div className={`w-full ${mounted ? "animate-slide-in-bottom" : "opacity-0"}`}>
+    <div className="w-full animate-slide-in-bottom">
       <Card className="w-full max-w-lg mx-auto border-0 shadow-2xl overflow-hidden bg-white">
         <div className="h-2 flex">
           <div className="flex-1 bg-[#32a7de]" /><div className="flex-1 bg-[#e8ba37]" /><div className="flex-1 bg-[#bd222f]" />
