@@ -338,7 +338,18 @@ export function RegistrationForm() {
         setIsSuccess(true)
         toast({ title: "Welcome to the Family!", description: "Your registration is complete. Check your phone for a special welcome gift!" })
       } else {
-        toast({ variant: "destructive", title: "Registration failed", description: result.error || "Please try again." })
+        // Check for duplicate/exists error from backend
+        const errorMsg = (result.error || "").toLowerCase()
+        if (errorMsg.includes("duplicate") || errorMsg.includes("already registered") || errorMsg.includes("exists")) {
+          setErrors((prev) => ({ ...prev, tagId: "This Tag ID is already registered. Please use a different one." }))
+          toast({
+            variant: "destructive",
+            title: "Tag ID already registered",
+            description: "The Tag ID you entered is already in use. Please use a different Tag ID.",
+          })
+        } else {
+          toast({ variant: "destructive", title: "Registration failed", description: result.error || "Please try again." })
+        }
       }
     } catch {
       toast({ variant: "destructive", title: "Network error", description: "Could not connect to the server." })
