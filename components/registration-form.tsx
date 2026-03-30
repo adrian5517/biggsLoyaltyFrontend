@@ -42,10 +42,11 @@ type BranchItem = { id?: string; branch_id?: string; b_id?: string; title?: stri
 
 interface FormData {
   tagId: string
+  name: string
   phoneNumber: string
-  dateOfBirth: string
-  favoriteMenu: string[]
-  frequentedLocation: string
+  birthday: string
+  favoriteMenuCode: string
+  frequentedBiggsLocationId: string
   interestedInEvents: boolean
   interestedInFranchise: boolean
 }
@@ -266,9 +267,14 @@ export function RegistrationForm() {
   const [menuFetchError, setMenuFetchError] = useState(false)
 
   const [formData, setFormData] = useState<FormData>({
-    tagId: "", phoneNumber: "", dateOfBirth: "",
-    favoriteMenu: [], frequentedLocation: "",
-    interestedInEvents: false, interestedInFranchise: false,
+    tagId: "",
+    name: "",
+    phoneNumber: "",
+    birthday: "",
+    favoriteMenuCode: "",
+    frequentedBiggsLocationId: "",
+    interestedInEvents: false,
+    interestedInFranchise: false,
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -302,11 +308,12 @@ export function RegistrationForm() {
   const validate = (): boolean => {
     const e: Partial<Record<keyof FormData, string>> = {}
     if (!formData.tagId.trim()) e.tagId = "Tag ID is required"
+    if (!formData.name.trim()) e.name = "Name is required"
     if (!formData.phoneNumber.trim()) { e.phoneNumber = "Phone number is required" }
     else if (!/^[\d\s\-+()]{10,15}$/.test(formData.phoneNumber.replace(/\s/g, ""))) { e.phoneNumber = "Please enter a valid phone number" }
-    if (!formData.dateOfBirth) e.dateOfBirth = "Date of birth is required"
-    if (formData.favoriteMenu.length === 0) e.favoriteMenu = "Please select at least one menu item"
-    if (!formData.frequentedLocation) e.frequentedLocation = "Please select a location"
+    if (!formData.birthday) e.birthday = "Birthday is required"
+    if (!formData.favoriteMenuCode) e.favoriteMenuCode = "Please select a favorite menu"
+    if (!formData.frequentedBiggsLocationId) e.frequentedBiggsLocationId = "Please select a location"
     setErrors(e)
     if (Object.keys(e).length > 0) {
       toast({ variant: "destructive", title: "Oops! Something is missing", description: "Please fill in all required fields correctly." })
@@ -325,10 +332,11 @@ export function RegistrationForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tag_id: formData.tagId,
+          name: formData.name,
           phone_number: formData.phoneNumber,
-          date_of_birth: formData.dateOfBirth,
-          favorite_menu: formData.favoriteMenu,
-          frequented_biggs_location_id: formData.frequentedLocation,
+          birthday: formData.birthday,
+          favorite_menu_code: formData.favoriteMenuCode,
+          frequented_biggs_location_id: Number(formData.frequentedBiggsLocationId),
           interested_in_events: Boolean(formData.interestedInEvents),
           interested_in_franchise: Boolean(formData.interestedInFranchise),
         }),
@@ -361,7 +369,16 @@ export function RegistrationForm() {
   const handleReset = () => {
     setIsSuccess(false)
     setErrors({})
-    setFormData({ tagId: "", phoneNumber: "", dateOfBirth: "", favoriteMenu: [], frequentedLocation: "", interestedInEvents: false, interestedInFranchise: false })
+    setFormData({
+      tagId: "",
+      name: "",
+      phoneNumber: "",
+      birthday: "",
+      favoriteMenuCode: "",
+      frequentedBiggsLocationId: "",
+      interestedInEvents: false,
+      interestedInFranchise: false,
+    })
   }
 
   if (isSuccess) {
@@ -422,7 +439,20 @@ export function RegistrationForm() {
               {errors.tagId && <p className="text-xs text-[#bd222f]">{errors.tagId}</p>}
             </div>
 
-            {/* Phone & DOB */}
+            {/* Name */}
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-sm font-medium text-[#222552]">Full Name <span className="text-[#bd222f]">*</span></Label>
+              <div className="relative group">
+                <Input
+                  id="name" placeholder="Enter your full name" value={formData.name}
+                  onChange={(e) => setField("name", e.target.value)}
+                  className={`h-10 border-2 transition-all duration-300 focus:border-[#32a7de] text-[#222552] bg-white ${errors.name ? "border-[#bd222f]" : "border-border hover:border-[#32a7de]/50"}`}
+                />
+              </div>
+              {errors.name && <p className="text-xs text-[#bd222f]">{errors.name}</p>}
+            </div>
+
+            {/* Phone & Birthday */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label htmlFor="phoneNumber" className="text-sm font-medium text-[#222552]">Phone <span className="text-[#bd222f]">*</span></Label>
@@ -437,37 +467,47 @@ export function RegistrationForm() {
                 {errors.phoneNumber && <p className="text-xs text-[#bd222f]">{errors.phoneNumber}</p>}
               </div>
               <div className="space-y-1">
-                <Label htmlFor="dateOfBirth" className="text-sm font-medium text-[#222552]">Date of Birth <span className="text-[#bd222f]">*</span></Label>
+                <Label htmlFor="birthday" className="text-sm font-medium text-[#222552]">Birthday <span className="text-[#bd222f]">*</span></Label>
                 <div className="relative group">
                   <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-[#32a7de]" />
                   <Input
-                    id="dateOfBirth" type="date" value={formData.dateOfBirth}
-                    onChange={(e) => setField("dateOfBirth", e.target.value)}
-                    className={`pl-10 h-10 border-2 transition-all duration-300 focus:border-[#32a7de] text-[#222552] bg-white ${errors.dateOfBirth ? "border-[#bd222f]" : "border-border hover:border-[#32a7de]/50"}`}
+                    id="birthday" type="date" value={formData.birthday}
+                    onChange={(e) => setField("birthday", e.target.value)}
+                    className={`pl-10 h-10 border-2 transition-all duration-300 focus:border-[#32a7de] text-[#222552] bg-white ${errors.birthday ? "border-[#bd222f]" : "border-border hover:border-[#32a7de]/50"}`}
                   />
                 </div>
-                {errors.dateOfBirth && <p className="text-xs text-[#bd222f]">{errors.dateOfBirth}</p>}
+                {errors.birthday && <p className="text-xs text-[#bd222f]">{errors.birthday}</p>}
               </div>
             </div>
 
-            {/* Favorite Menu */}
+            {/* Favorite Menu Code */}
             <div className="space-y-1">
               <Label className="text-sm font-medium text-[#222552]">Favorite Menu <span className="text-[#bd222f]">*</span></Label>
-              <MultiSelect
-                options={menuOptions} selected={formData.favoriteMenu}
-                onChange={(val) => setField("favoriteMenu", val)}
-                hasError={!!errors.favoriteMenu} isLoading={menuLoading} hasLoadError={menuFetchError}
-              />
-              {errors.favoriteMenu && <p className="text-xs text-[#bd222f]">{errors.favoriteMenu}</p>}
+              <div className="relative group">
+                <Utensils className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
+                <Select value={formData.favoriteMenuCode || undefined} onValueChange={(val) => setField("favoriteMenuCode", val)}>
+                  <SelectTrigger className={`pl-10 h-10 w-full border-2 transition-all duration-300 focus:border-[#32a7de] text-[#222552] bg-white ${errors.favoriteMenuCode ? "border-[#bd222f]" : "border-border hover:border-[#32a7de]/50"}`}>
+                    <SelectValue placeholder="Select favorite menu" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {menuOptions.map((item, idx) => {
+                      const menuCode = String(item.m_code ?? `menu-${idx}`)
+                      const menuTitle = item.m_title ?? `Menu Item ${idx + 1}`
+                      return <SelectItem key={menuCode} value={menuCode} className="cursor-pointer text-[#222552]">{menuTitle}</SelectItem>
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+              {errors.favoriteMenuCode && <p className="text-xs text-[#bd222f]">{errors.favoriteMenuCode}</p>}
             </div>
 
-            {/* Frequented Location */}
+            {/* Frequented Biggs Location */}
             <div className="space-y-1">
-              <Label className="text-sm font-medium text-[#222552]">Frequented Bigg&apos;s Location <span className="text-[#bd222f]">*</span></Label>
+              <Label className="text-sm font-medium text-[#222552]">Frequented Bigg's Location <span className="text-[#bd222f]">*</span></Label>
               <div className="relative group">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
-                <Select value={formData.frequentedLocation || undefined} onValueChange={(val) => setField("frequentedLocation", val)}>
-                  <SelectTrigger className={`pl-10 h-10 w-full border-2 transition-all duration-300 focus:border-[#32a7de] text-[#222552] bg-white ${errors.frequentedLocation ? "border-[#bd222f]" : "border-border hover:border-[#32a7de]/50"}`}>
+                <Select value={formData.frequentedBiggsLocationId || undefined} onValueChange={(val) => setField("frequentedBiggsLocationId", val)}>
+                  <SelectTrigger className={`pl-10 h-10 w-full border-2 transition-all duration-300 focus:border-[#32a7de] text-[#222552] bg-white ${errors.frequentedBiggsLocationId ? "border-[#bd222f]" : "border-border hover:border-[#32a7de]/50"}`}>
                     <SelectValue placeholder="Select preferred location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -479,7 +519,7 @@ export function RegistrationForm() {
                   </SelectContent>
                 </Select>
               </div>
-              {errors.frequentedLocation && <p className="text-xs text-[#bd222f]">{errors.frequentedLocation}</p>}
+              {errors.frequentedBiggsLocationId && <p className="text-xs text-[#bd222f]">{errors.frequentedBiggsLocationId}</p>}
             </div>
 
             {/* Interest Toggles */}
