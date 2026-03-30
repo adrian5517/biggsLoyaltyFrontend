@@ -35,7 +35,7 @@ import {
   Check,
 } from "lucide-react"
 
-const API_BASE = "http://localhost:8080/api"
+const API_BASE = "https://biggsph.com/biggsLoyaltyPHP/api"
 
 type MenuItem = { m_id?: string; id?: string; m_title?: string; title?: string }
 type BranchItem = { id?: string; branch_id?: string; b_id?: string; title?: string; branch_name?: string }
