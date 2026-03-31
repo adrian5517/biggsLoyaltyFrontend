@@ -46,6 +46,8 @@ export default function HomePage() {
         <div className="absolute bottom-24 right-40 w-2 h-2 rounded-full bg-[#e8ba37]/30 animate-pulse delay-200" />
       </div>
 
+      
+      
       {/* Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
         {/* Two-column layout on desktop, stacked on mobile */}
@@ -61,10 +63,10 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-[#222552] mb-4 animate-fade-in-down stagger-1 opacity-0 text-balance leading-tight" style={{ animationFillMode: 'forwards' }}>
+            <h1 className="text-5xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-[#222552] mb-4 animate-fade-in-down stagger-1 opacity-0 text-balance leading-tight" style={{ animationFillMode: 'forwards' }}>
               Welcome to<br />
-              <span className="text-[#32a7de]">BIGGS</span>
-            </h1>
+              <span className="text-[#32a7de] text-7xl">BIGGS</span>
+            </h1> 
 
             <p className="text-muted-foreground text-sm sm:text-base lg:text-lg animate-fade-in-down stagger-2 opacity-0 text-pretty max-w-sm" style={{ animationFillMode: 'forwards' }}>
               Join our loyalty program and unlock exclusive benefits, birthday rewards, and special member-only offers.

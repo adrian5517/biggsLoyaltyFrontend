@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+
+/* ── Base ── */
+.biggs-animated-btn {
+  --btn-bg: hsl(245, 89%, 18%);
+  --btn-bg-hover: hsl(203, 72%, 54%);
+  --btn-shadow: 0 4px 0px hsl(40deg 90% 35%),
+                0 6px 16px hsla(49, 90%, 50%, 0.45);
+  --btn-shadow-active: 0 1px 0px hsl(40deg 90% 35%),
+                       0 2px 6px hsla(49, 90%, 50%, 0.35);
+  --btn-border: 2.5px solid hsl(50, 83%, 47%);
+  --btn-radius: 999px;
+  --text-color: #fff;
+  --text-shadow: 1px 2px 0px hsla(38, 70%, 25%, 0.55);
+
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 22px;
+  height: 52px;
+  color: var(--text-color);
+  text-shadow: var(--text-shadow);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  border: var(--btn-border);
+  background: var(--btn-bg);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease,
+    filter 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  outline: none;
+}
+
+/* ── Size variants ── */
+.biggs-animated-btn.size-sm {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13px;
+  gap: 7px;
+}
+.biggs-animated-btn.size-sm .btn-img {
+  width: 26px;
+  height: 26px;
+}
+
+.biggs-animated-btn.size-lg {
+  height: 64px;
+  padding: 0 28px;
+  font-size: 20px;
+  gap: 13px;
+}
+.biggs-animated-btn.size-lg .btn-img {
+  width: 46px;
+  height: 46px;
+}
+
+/* ── States ── */
+.biggs-animated-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.biggs-animated-btn:focus-visible {
+  outline: 3px solid hsl(38deg 85% 30%);
+  outline-offset: 3px;
+}
+
+.biggs-animated-btn:not(:disabled):hover {
+  background: var(--btn-bg-hover);
+  filter: brightness(1.06);
+}
+
+.biggs-animated-btn:not(:disabled):active {
+  transform: translateY(3px) scale(0.97);
+  box-shadow: var(--btn-shadow-active);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+
+/* ── Logo ── */
+.biggs-animated-btn .btn-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: contain;
+  
+  
+  flex-shrink: 0;
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+  position: relative;
+}
+
+.biggs-animated-btn:not(:disabled):hover .btn-img {
+  transform: scale(3.2) translateX(46%);
+}
+
+/* ── "play" text ── */
+.biggs-animated-btn .play {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  transition-delay: 280ms;
+}
+
+.biggs-animated-btn:not(:disabled):hover .play {
+  transform: translateX(220%);
+  transition-delay: 280ms;
+}
+
+/* ── "now" text ── */
+.biggs-animated-btn .now {
+  position: absolute;
+  left: 0;
+  transform: translateX(-115%);
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
+  z-index: 2;
+  white-space: nowrap;
+  padding-left: 12rem;
+}
+
+.biggs-animated-btn:not(:disabled):hover .now {
+  transform: translateX(0);
+  transition-delay: 290ms;
+}
+
+/* ── Ripple ── */
+.biggs-animated-btn .ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  background: hsla(0, 0%, 100%, 0.45);
+  transform: translate(-50%, -50%) scale(0);
+  animation: biggs-ripple 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes biggs-ripple {
+  to {
+    transform: translate(-50%, -50%) scale(28);
+    opacity: 0;
+  }
+}
+
+/* ── Shine sweep ── */
+.biggs-animated-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    hsla(0, 0%, 100%, 0.22) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.55s ease;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.biggs-animated-btn:not(:disabled):hover::after {
+  transform: translateX(100%);
+  transition-delay: 50ms;
+}

@@ -1,4 +1,6 @@
 "use client"
+import { BiggsAnimatedButton } from "@/components/BiggsAnimatedButton";
+import "@/styles/biggs-animated-btn.css";
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { createPortal } from "react-dom"
@@ -399,9 +401,13 @@ export function RegistrationForm() {
             </div>
             <h2 className="text-3xl font-bold text-[#222552] mb-3">You&apos;re In!</h2>
             <p className="text-muted-foreground mb-8 text-lg px-4">Welcome to the Biggs family! Get ready for exclusive offers and delicious rewards.</p>
-            <Button onClick={handleReset} className="bg-[#222552] hover:bg-[#1a1c40] text-white px-8 h-12 font-semibold text-base">
-              Register Another Member
-            </Button>
+            <div className="flex justify-center mt-6">
+              <BiggsAnimatedButton onClick={handleReset}>
+                <span className="now">now!</span>
+                <span className="play">Register Another Member</span>
+              </BiggsAnimatedButton>
+            </div>
+            
           </CardContent>
         </Card>
       </div>
@@ -557,17 +563,27 @@ export function RegistrationForm() {
               />
             </div>
 
+          
             {/* Submit */}
-            <div className="pt-3">
-              <Button
-                type="submit" disabled={isSubmitting}
-                className="w-full h-11 sm:h-12 bg-[#222552] hover:bg-[#1a1c40] text-white font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+            <div className="pt-3 flex justify-center">
+              <BiggsAnimatedButton
+                type="submit"
+                className="w-full h-11 sm:h-12 justify-center"
+                style={{ maxWidth: 400 }}
+                disabled={isSubmitting}
               >
-                {isSubmitting
-                  ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...</>
-                  : <><CheckCircle2 className="mr-2 h-5 w-5" /> Complete Registration</>
-                }
-              </Button>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    <span className="play">Complete Registration</span>
+                    <span className="now">Submit</span>
+                  </>
+                )}
+              </BiggsAnimatedButton>
             </div>
 
           </form>
