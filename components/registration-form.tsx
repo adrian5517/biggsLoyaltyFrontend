@@ -35,9 +35,11 @@ import {
   Check,
 } from "lucide-react"
 
-const API_BASE = "https://biggsph.com/biggsLoyaltyPHP/api"
 
-type MenuItem = { m_id?: string; id?: string; m_title?: string; title?: string }
+const API_BASE = "/api/proxy"
+
+
+type MenuItem = { m_id?: string; id?: string; m_title?: string; title?: string; m_code?: string }
 type BranchItem = { id?: string; branch_id?: string; b_id?: string; title?: string; branch_name?: string }
 
 interface FormData {
@@ -209,7 +211,7 @@ function MultiSelect({
 }
 
 // ---------------------------------------------------------------------------
-// ToggleCard — proper <button type="button"> avoids all click event issues
+// ToggleCard
 // ---------------------------------------------------------------------------
 interface ToggleCardProps {
   checked: boolean
@@ -260,7 +262,7 @@ function ToggleCard({ checked, onChange, accentColor, icon, label, description }
 // ---------------------------------------------------------------------------
 export function RegistrationForm() {
   const { toast } = useToast()
-  
+
   const [menuOptions, setMenuOptions] = useState<MenuItem[]>([])
   const [branchOptions, setBranchOptions] = useState<BranchItem[]>([])
   const [menuLoading, setMenuLoading] = useState(true)
@@ -281,6 +283,7 @@ export function RegistrationForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
 
   useEffect(() => {
+    // ✅ Calls your local Next.js proxy — no CORS
     fetch(`${API_BASE}/menu_list.php`)
       .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then((data) => {
@@ -327,6 +330,7 @@ export function RegistrationForm() {
     if (!validate()) return
     setIsSubmitting(true)
     try {
+      // ✅ Calls your local Next.js proxy — no CORS
       const res = await fetch(`${API_BASE}/register.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -346,7 +350,6 @@ export function RegistrationForm() {
         setIsSuccess(true)
         toast({ title: "Welcome to the Family!", description: "Your registration is complete. Check your phone for a special welcome gift!" })
       } else {
-        // Check for duplicate/exists error from backend
         const errorMsg = (result.error || "").toLowerCase()
         if (errorMsg.includes("duplicate") || errorMsg.includes("already registered") || errorMsg.includes("exists")) {
           setErrors((prev) => ({ ...prev, tagId: "This Tag ID is already registered. Please use a different one." }))
@@ -490,11 +493,19 @@ export function RegistrationForm() {
                     <SelectValue placeholder="Select favorite menu" />
                   </SelectTrigger>
                   <SelectContent>
-                    {menuOptions.map((item, idx) => {
-                      const menuCode = String(item.m_code ?? `menu-${idx}`)
-                      const menuTitle = item.m_title ?? `Menu Item ${idx + 1}`
-                      return <SelectItem key={menuCode} value={menuCode} className="cursor-pointer text-[#222552]">{menuTitle}</SelectItem>
-                    })}
+                    {menuLoading ? (
+                      <SelectItem value="__loading__" disabled>Loading menu items…</SelectItem>
+                    ) : menuFetchError ? (
+                      <SelectItem value="__error__" disabled>Could not load menu items</SelectItem>
+                    ) : menuOptions.length === 0 ? (
+                      <SelectItem value="__empty__" disabled>No menu items found</SelectItem>
+                    ) : (
+                      menuOptions.map((item, idx) => {
+                        const menuCode = String(item.m_code ?? item.m_id ?? item.id ?? `menu-${idx}`)
+                        const menuTitle = item.m_title ?? item.title ?? `Menu Item ${idx + 1}`
+                        return <SelectItem key={menuCode} value={menuCode} className="cursor-pointer text-[#222552]">{menuTitle}</SelectItem>
+                      })
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -503,7 +514,7 @@ export function RegistrationForm() {
 
             {/* Frequented Biggs Location */}
             <div className="space-y-1">
-              <Label className="text-sm font-medium text-[#222552]">Frequented Bigg's Location <span className="text-[#bd222f]">*</span></Label>
+              <Label className="text-sm font-medium text-[#222552]">Frequented Bigg&apos;s Location <span className="text-[#bd222f]">*</span></Label>
               <div className="relative group">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
                 <Select value={formData.frequentedBiggsLocationId || undefined} onValueChange={(val) => setField("frequentedBiggsLocationId", val)}>
@@ -511,11 +522,15 @@ export function RegistrationForm() {
                     <SelectValue placeholder="Select preferred location" />
                   </SelectTrigger>
                   <SelectContent>
-                    {branchOptions.map((branch, idx) => {
-                      const branchId = String(branch.id ?? branch.branch_id ?? branch.b_id ?? `branch-${idx}`)
-                      const branchTitle = branch.title ?? branch.branch_name ?? `Branch ${idx + 1}`
-                      return <SelectItem key={branchId} value={branchId} className="cursor-pointer text-[#222552]">{branchTitle}</SelectItem>
-                    })}
+                    {branchOptions.length === 0 ? (
+                      <SelectItem value="__loading__" disabled>Loading locations…</SelectItem>
+                    ) : (
+                      branchOptions.map((branch, idx) => {
+                        const branchId = String(branch.id ?? branch.branch_id ?? branch.b_id ?? `branch-${idx}`)
+                        const branchTitle = branch.title ?? branch.branch_name ?? `Branch ${idx + 1}`
+                        return <SelectItem key={branchId} value={branchId} className="cursor-pointer text-[#222552]">{branchTitle}</SelectItem>
+                      })
+                    )}
                   </SelectContent>
                 </Select>
               </div>

@@ -17,6 +17,8 @@ export const viewport = {
   userScalable: false,
 }
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Biggs Loyalty",
   description: "Join the Bigg's loyalty program and enjoy exclusive benefits, rewards, and special offers",
